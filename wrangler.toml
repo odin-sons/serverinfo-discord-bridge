@@ -11,6 +11,17 @@ workers_dev = false
 [triggers]
 crons = ["*/10 * * * *"]
 
+# Persists scheduled-run logs (success/failure, console.error output) to the
+# Cloudflare dashboard, so you don't need a live `wrangler tail` session open
+# to see what a past cron invocation did.
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+invocation_logs = true
+persist = true
+
 # Secrets — set with `wrangler secret put NAME`, never commit real values.
 #   SERVERINFO_URL      required, e.g. https://your-domain/serverinfo
 #   DISCORD_CHANNEL_ID   required, the voice channel's ID
