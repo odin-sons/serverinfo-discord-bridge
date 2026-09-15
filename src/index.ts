@@ -1,11 +1,12 @@
 import { updateDiscordChannel } from './update-channel'
+import { errorMessage } from './error-message'
 import type { Env } from './types'
 
 export default {
     async scheduled (_controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
         ctx.waitUntil(
             updateDiscordChannel(env).catch((error: unknown) => {
-                console.error('scheduled update failed:', error)
+                console.error('scheduled update failed:', errorMessage(error))
             })
         )
     },
@@ -26,7 +27,7 @@ export default {
                 const result = await updateDiscordChannel(env)
                 return Response.json(result)
             } catch (error) {
-                return new Response(`update failed: ${String(error)}`, { status: 500 })
+                return new Response(`update failed: ${errorMessage(error)}`, { status: 500 })
             }
         }
 

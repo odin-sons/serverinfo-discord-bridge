@@ -1,6 +1,7 @@
 import { fetchServerInfo } from './serverinfo'
 import { setChannelName } from './discord'
 import { buildOfflineChannelName, buildOnlineChannelName } from './channel-name'
+import { errorMessage } from './error-message'
 import type { Env } from './types'
 
 const LAST_NAME_KEY = 'last-channel-name'
@@ -18,7 +19,7 @@ export async function updateDiscordChannel (env: Env): Promise<UpdateResult> {
         const info = await fetchServerInfo(env.SERVERINFO_URL)
         name = buildOnlineChannelName(env.SERVER_LABEL ?? info.name, info.playersCount)
     } catch (error) {
-        console.error('serverinfo fetch failed:', error)
+        console.error('serverinfo fetch failed:', errorMessage(error))
         name = buildOfflineChannelName(serverLabel)
     }
 
