@@ -37,8 +37,19 @@ running or maintaining a backend of their own.
 3. If a `STATE_KV` namespace is bound, the computed name is compared against
    the last one written; a PATCH to Discord is only sent when it changed, to
    avoid burning the rate limit on no-op renames.
-4. A `POST /trigger` endpoint (guarded by a shared secret) lets you force an
+4. A `POST /trigger` endpoint (guarded by `TRIGGER_SECRET`) lets you force an
    update on demand, e.g. while testing.
+5. A `GET /debug` endpoint (same guard) calls the Discord API directly as the
+   bot — `/users/@me`, `/users/@me/guilds`, the target channel, and the
+   bot's guild member object — and returns the raw responses. Useful for
+   diagnosing "Missing Access" (403) errors: it shows exactly which guilds
+   the bot is in, and what Discord's API returns for the configured
+   channel, without ever exposing the bot token itself.
+
+Neither endpoint is reachable by default — `workers_dev` is off, so there's
+no public route. Temporarily set `workers_dev = true` in `wrangler.toml`,
+`pnpm deploy`, and curl the printed `*.workers.dev` URL to use them; then
+flip it back and redeploy.
 
 ## Configuration
 

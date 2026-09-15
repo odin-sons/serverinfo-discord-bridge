@@ -2,8 +2,9 @@ name = "serverinfo-discord-bridge"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 
-# No public HTTP is needed — only the Cron Trigger, and occasionally the
-# manual POST /trigger endpoint during local development.
+# No public HTTP is needed day-to-day — only the Cron Trigger. Flip this to
+# true temporarily (then `pnpm deploy` again) to reach /trigger or /debug
+# for manual testing/troubleshooting, and back to false when done.
 workers_dev = false
 
 # Discord limits voice/text channel renames to ~2 per 10 minutes per channel.

@@ -1,6 +1,11 @@
 import { updateDiscordChannel } from './update-channel'
 import { errorMessage } from './error-message'
+import { runDiagnostics } from './diagnose'
 import type { Env } from './types'
+
+function isAuthorized (request: Request, env: Env): boolean {
+    return env.TRIGGER_SECRET !== undefined && request.headers.get('x-trigger-secret') === env.TRIGGER_SECRET
+}
 
 export default {
     async scheduled (_controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
@@ -19,7 +24,7 @@ export default {
         }
 
         if (url.pathname === '/trigger' && request.method === 'POST') {
-            if (env.TRIGGER_SECRET === undefined || request.headers.get('x-trigger-secret') !== env.TRIGGER_SECRET) {
+            if (!isAuthorized(request, env)) {
                 return new Response('unauthorized', { status: 401 })
             }
 
@@ -29,6 +34,14 @@ export default {
             } catch (error) {
                 return new Response(`update failed: ${errorMessage(error)}`, { status: 500 })
             }
+        }
+
+        if (url.pathname === '/debug' && request.method === 'GET') {
+            if (!isAuthorized(request, env)) {
+                return new Response('unauthorized', { status: 401 })
+            }
+
+            return Response.json(await runDiagnostics(env))
         }
 
         return new Response('not found', { status: 404 })
