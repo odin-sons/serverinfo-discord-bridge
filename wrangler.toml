@@ -2,19 +2,27 @@ name = "serverinfo-discord-bridge"
 main = "src/index.ts"
 compatibility_date = "2026-09-01"
 
+# No public HTTP is needed — only the Cron Trigger, and occasionally the
+# manual POST /trigger endpoint during local development.
+workers_dev = false
+
 # Discord limits voice/text channel renames to ~2 per 10 minutes per channel.
 # Every 10 minutes keeps a safety margin without any change being wasted.
 [triggers]
 crons = ["*/10 * * * *"]
 
 [vars]
-SERVERINFO_URL = "http://YOUR_SERVER_IP:8880/serverinfo"
-DISCORD_CHANNEL_ID = "REPLACE_WITH_VOICE_CHANNEL_ID"
 SERVER_LABEL = "Lite_v2"
 
 # Secrets — set with `wrangler secret put NAME`, never commit real values.
-#   DISCORD_BOT_TOKEN   required, the bot's token
-#   TRIGGER_SECRET      optional, enables manual `POST /trigger` for testing
+#   SERVERINFO_URL      required, e.g. https://your-domain/serverinfo
+#   DISCORD_CHANNEL_ID   required, the voice channel's ID
+#   DISCORD_BOT_TOKEN    required, the bot's token
+#   TRIGGER_SECRET       optional, enables manual `POST /trigger` for testing
+#
+# SERVERINFO_URL and DISCORD_CHANNEL_ID aren't credentials on their own, but
+# they're kept as secrets rather than [vars] so this template stays generic
+# and isn't tied to one specific server/Discord guild in a public repo.
 
 # Uncomment once a KV namespace is created (`wrangler kv namespace create STATE_KV`)
 # to skip redundant Discord renames when the computed name hasn't changed:
