@@ -11,18 +11,17 @@ workers_dev = false
 [triggers]
 crons = ["*/10 * * * *"]
 
-[vars]
-SERVER_LABEL = "Lite_v2"
-
 # Secrets — set with `wrangler secret put NAME`, never commit real values.
 #   SERVERINFO_URL      required, e.g. https://your-domain/serverinfo
 #   DISCORD_CHANNEL_ID   required, the voice channel's ID
 #   DISCORD_BOT_TOKEN    required, the bot's token
+#   SERVER_LABEL         optional, fixed label shown in the channel name
 #   TRIGGER_SECRET       optional, enables manual `POST /trigger` for testing
 #
-# SERVERINFO_URL and DISCORD_CHANNEL_ID aren't credentials on their own, but
-# they're kept as secrets rather than [vars] so this template stays generic
-# and isn't tied to one specific server/Discord guild in a public repo.
+# None of these but DISCORD_BOT_TOKEN is an actual credential, but all of
+# them identify one specific server/Discord guild, so they're kept as
+# secrets rather than [vars] to keep this template generic and reusable in
+# a public repo.
 
 # Uncomment once a KV namespace is created (`wrangler kv namespace create STATE_KV`)
 # to skip redundant Discord renames when the computed name hasn't changed:

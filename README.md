@@ -42,17 +42,23 @@ running or maintaining a backend of their own.
 
 ## Configuration
 
-Set as plain variables in `wrangler.toml` under `[vars]`, or as secrets via
-`wrangler secret put <NAME>` (never commit real values for these):
+All set as secrets via `wrangler secret put <NAME>` — never committed, and
+never added to `wrangler.toml` under `[vars]` either, since every one of
+them (bar the bot token) identifies your specific server or Discord guild
+rather than being generic template config:
 
-| Name | Kind | Required | Meaning |
-|---|---|---|---|
-| `SERVERINFO_URL` | secret | yes | Full URL of the ServerInfo plugin's `/serverinfo` endpoint, e.g. `http://203.0.113.10:8880/serverinfo`. Not a credential, but kept as a secret so the public template isn't tied to one server. |
-| `DISCORD_CHANNEL_ID` | secret | yes | ID of the voice channel to rename. Not a credential, kept as a secret for the same reason. |
-| `SERVER_LABEL` | var | no | Fixed label shown in the channel name (e.g. `Lite_v2`). Falls back to the `name` field from `/serverinfo` when unset. |
-| `DISCORD_BOT_TOKEN` | secret | yes | Bot token with `Manage Channels` permission on the target channel. |
-| `TRIGGER_SECRET` | secret | no | If set, enables `POST /trigger` with header `X-Trigger-Secret: <value>` for manual runs. Endpoint is otherwise disabled (401). |
-| `STATE_KV` | KV binding | no | Namespace used to remember the last channel name and skip redundant Discord calls. |
+| Name | Required | Meaning |
+|---|---|---|
+| `SERVERINFO_URL` | yes | Full URL of the ServerInfo plugin's `/serverinfo` endpoint, e.g. `http://203.0.113.10:8880/serverinfo`. |
+| `DISCORD_CHANNEL_ID` | yes | ID of the voice channel to rename. |
+| `DISCORD_BOT_TOKEN` | yes | Bot token with `Manage Channels` permission on the target channel. |
+| `SERVER_LABEL` | no | Fixed label shown in the channel name (e.g. `Lite_v2`). Falls back to the `name` field from `/serverinfo` when unset. |
+| `TRIGGER_SECRET` | no | If set, enables `POST /trigger` with header `X-Trigger-Secret: <value>` for manual runs. Endpoint is otherwise disabled (401). |
+
+Additionally, a `STATE_KV` KV namespace binding (not a secret — configured in
+`wrangler.toml`) can be set up to remember the last channel name and skip
+redundant Discord calls; see the commented-out example at the bottom of
+`wrangler.toml`.
 
 See [`.dev.vars.example`](.dev.vars.example) for local development.
 
