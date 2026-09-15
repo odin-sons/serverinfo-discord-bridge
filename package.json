@@ -1,0 +1,42 @@
+{
+    "name": "serverinfo-discord-bridge",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "Cloudflare Worker that renames a Discord voice channel to show a Valheim server's name and live player count, read from the ServerInfo mod's HTTP endpoint.",
+    "engines": {
+        "node": ">=24.21.0",
+        "npm": ">=11.19.0"
+    },
+    "volta": {
+        "node": "24.21.0",
+        "pnpm": "12.4.2"
+    },
+    "packageManager": "pnpm@12.4.2",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "prepare": "simple-git-hooks"
+    },
+    "simple-git-hooks": {
+        "pre-commit": "npx lint-staged"
+    },
+    "lint-staged": {
+        "*.{ts,js}": "eslint --fix"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^5.20260911.1",
+        "eslint": "^9.39.5",
+        "lint-staged": "^17.5.1",
+        "neostandard": "^0.13.0",
+        "simple-git-hooks": "^2.14.0",
+        "typescript": "^6.0.3",
+        "vitest": "^5.0.0",
+        "wrangler": "^4.131.1"
+    }
+}
